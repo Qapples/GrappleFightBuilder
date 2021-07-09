@@ -122,6 +122,8 @@ namespace GrappleFightBuilder
 
         private const string _classBase = @"
             public static class ";
+
+        private const string _exampleClass = "public static class Example{}";
         
         /// <summary>
         /// Constructs an instance of <see cref="ScriptAssemblyBuilder"/> with <see cref="ScriptInfo"/> instances.
@@ -195,6 +197,7 @@ namespace GrappleFightBuilder
             StringBuilder final = new();
 
             final.Append(GetHeader((IEnumerable<string>?) Imports ?? DefaultImports));
+            final.Append(_exampleClass); //have this example class so that we can get the assembly via typeof().Assembly
             final.Append(Body);
             final.Append('}'); //this is for the open bracket from the namespace declaration.
 
@@ -205,7 +208,7 @@ namespace GrappleFightBuilder
         /// Compiles the script from <see cref="Body"/> with the imports from <see cref="Imports"/> into an
         /// <see cref="Assembly"/> that can be referenced and invoked.
         /// </summary>
-        /// <param name="filePath">The file path describing where to write the compiled assembly to. </param>
+        /// <param name="filePath">The file path describing where to write the compiled assembly to.</param>
         /// <param name="compilationOptions">Additional <see cref="CSharpCompilationOptions"/> that change how the
         /// script is compiled. By default, a new <see cref="CSharpCompilationOptions"/> instance with an
         /// <see cref="OutputKind"/> of <see cref="OutputKind.DynamicallyLinkedLibrary"/>.</param>
