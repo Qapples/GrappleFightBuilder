@@ -112,64 +112,7 @@ namespace GrappleFightBuilder
         {
         }
 
-        private const string _initBase = @"
-            public static void Init(in Entity entity, World world)
-            {";
-
-        private const string _updateBase = @"
-            public static void Update(GameTime gameTime, in Entity entity, World world)
-            {";
-
-        private const string _classBase = @"
-            public static class ";
-
         private const string _exampleClass = "public static class Example{}";
-        
-        /// <summary>
-        /// Constructs an instance of <see cref="ScriptAssemblyBuilder"/> with <see cref="ScriptInfo"/> instances.
-        /// in a <see cref="ReadOnlySpan{T}"/>.
-        /// </summary>
-        /// <param name="scriptInfos"><see cref="ScriptInfo"/> instances with it's <see cref="ScriptInfo.Init"/> and
-        /// <see cref="ScriptInfo.Update"/> methods as the body, with each pair of methods being under a static class
-        /// of name _<see cref="ScriptInfo.Name"/>. If <see cref="ScriptInfo.Name"/> is null, then the class name will
-        /// be _{i}, with i representing the index of the <see cref="ScriptInfo"/> instance in <see cref="scriptInfos"/>
-        /// </param>
-        /// <param name="imports">Defines the imports the script will use. If null, a default set of imports will be
-        /// used. Default imports:<br/>
-        /// using System;<br/>
-        /// using System.Diagnostics;<br/>
-        /// using DefaultEcs;<br/>
-        /// using Microsoft.Xna.Framework;</param>
-        /// <param name="nspace">Defines the namespace that will encompass all the classes and methods the script will
-        /// use. If null, then a default namespace (<see cref="DefaultNamespace"/>) will be used.</param>
-        /// <param name="references"><see cref="MetadataReference"/> instances that define the references that are
-        /// necessary to compile the script.</param>
-        public ScriptAssemblyBuilder(in ReadOnlySpan<ScriptInfo> scriptInfos, string[]? imports = null, string? nspace = null,
-            MetadataReference[]? references = null) : this(imports, nspace, references)
-        {
-            for (int i = 0; i < scriptInfos.Length; i++)
-            {
-                ref readonly var scriptInfo = ref scriptInfos[i];
-
-                Body.Append($"{_classBase}_{scriptInfo.Name ?? i.ToString()}\n{{");
-
-                if (scriptInfo.Init is not null)
-                {
-                    Body.Append(
-                        $"{_initBase}{(scriptInfo.IsFilePath ? File.ReadAllText(scriptInfo.Init) : scriptInfo.Init)}" +
-                        "}\n");
-                }
-
-                if (scriptInfo.Update is not null)
-                {
-                    Body.Append(
-                        $"{_updateBase}{(scriptInfo.IsFilePath ? File.ReadAllText(scriptInfo.Update) : scriptInfo.Update)}" +
-                        "}\n");
-                }
-
-                Body.Append($"\n}}");
-            }
-        }
 
         /// <summary>
         /// Adds code to <see cref="Body"/> and any new imports to <see cref="Imports"/> from script data.
