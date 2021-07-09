@@ -16,6 +16,7 @@ namespace GrappleFightBuilder
 
             Console.WriteLine($"Building the following scripts: {string.Join(' ', args[..^1])}");
             var results = scriptBuilder.CompileIntoAssembly(outPath);
+            Console.WriteLine($"Output .dll to file path: {Path.GetFullPath(outPath)}");
             Console.WriteLine(
                 $"Diagnostic results:\n{string.Join("\n\n", results.Select(e => e.GetMessage()).ToArray())}");
         }
