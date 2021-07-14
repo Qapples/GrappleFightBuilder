@@ -77,6 +77,7 @@ namespace GrappleFightBuilder
         /// necessary to compile the script.</param>
         /// <param name="scriptContents">The scripts (as strings, not file paths) to combine together so that an
         /// <see cref="Assembly"/> can be created later on.</param>
+        // we have to use null here because we can't set it to any variable non-const value
         public ScriptAssemblyBuilder(string[]? imports = null, string? nspace = null,
             MetadataReference[]? references = null, params string[]? scriptContents)
         {
