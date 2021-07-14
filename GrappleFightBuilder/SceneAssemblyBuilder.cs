@@ -73,8 +73,8 @@ namespace GrappleFightBuilder
 
             foreach (var (name, contents) in SceneContents)
             {
-                final.Append($"{_classHeader} _{name}\n{{\n");
-                final.Append($"{_dataHeader} _{GetBase64FromWorldContents(contents, serializer)}\n");
+                final.Append($"{_classHeader} _{name.Remove(name.IndexOf('.'))}\n{{\n");
+                final.Append($"{_dataHeader} \"{GetBase64FromWorldContents(contents, serializer)}\";\n");
                 final.Append("}");
             }
 
@@ -86,7 +86,8 @@ namespace GrappleFightBuilder
         private string GetBase64FromWorldContents(string worldContents, ISerializer serializer)
         {
             //convert into world first
-            World world = serializer.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(worldContents)));
+            TextSerializer textSerializer = new();
+            World world = textSerializer.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(worldContents)));
 
             //convert world to raw byte data
             byte[] bytes;
