@@ -9,21 +9,6 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            // World testWorld = new();
-            // Entity testEntity = testWorld.CreateEntity();
-            // testEntity.Set<string>("Base");
-            //
-            // using MemoryStream stream = new(101);
-            // using var context = new BinarySerializationContext().Marshal<string, string>(_ => null);
-            // BinarySerializer serializer = new();
-            // byte[] bytes;
-            //
-            // serializer.Serialize(stream, testWorld);
-            // bytes = stream.ToArray();
-            //
-            // string base64String = Convert.ToBase64String(bytes);
-            // byte[] base64Bytes = Convert.FromBase64String(base64String);
-            // World outWorld = serializer.Deserialize(new MemoryStream(base64Bytes));
             var (scriptDirectory, scriptOutput) = (@"Scripts/", "GrappleFightScripts.dll");
             var (sceneDirectory, sceneOutput) = (@"Scenes/", "GrappleFightScenes.dll");
 

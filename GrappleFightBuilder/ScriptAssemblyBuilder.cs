@@ -22,7 +22,7 @@ namespace GrappleFightBuilder
     /// </summary>
     public class ScriptAssemblyBuilder
     {
-        private const string DefaultNamespace = "Scripts";
+        private const string DefaultNamespace = "ScriptData";
 
         /// <summary>
         /// The references that will be used when no references are specified in the constructor.

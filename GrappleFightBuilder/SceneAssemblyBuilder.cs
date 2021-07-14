@@ -21,7 +21,7 @@ namespace GrappleFightBuilder
     /// </summary>
     public class SceneAssemblyBuilder
     {
-        private const string DefaultNamespace = "Scenes";
+        private const string DefaultNamespace = "SceneData";
 
         private static readonly MetadataReference[] DefaultReferences = new[]
         {
@@ -68,6 +68,13 @@ namespace GrappleFightBuilder
         private const string _worldField =
             @"public static readonly World World = new BinarySerializer().Deserialize(new MemoryStream(Convert.FromBase64String(Base64WorldContents)));";
 
+        private const string _dataInterface =
+            @"public interface IWorldDataInterface
+            {
+                public static string Base64WorldContents;
+                public static readonly World World;
+            }";
+
         private string GetFinalizedSource(ISerializer serializer)
         {
             StringBuilder final = new();
@@ -82,6 +89,7 @@ namespace GrappleFightBuilder
                 final.Append("}");
             }
 
+            final.Append(_dataInterface);
             final.Append("}"); //closing bracket from the namespace
 
             return final.ToString();
