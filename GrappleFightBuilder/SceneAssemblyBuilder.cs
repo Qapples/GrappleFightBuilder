@@ -48,17 +48,18 @@ namespace GrappleFightBuilder
         /// The name of the main namespace when compiling the assembly.
         /// </summary>
         public string NamespaceName { get; set; }
+        
 
         /// <summary>
         /// Constructs a <see cref="SceneAssemblyBuilder"/> instance.
         /// </summary>
-        /// <param name="namespaceName">The name of the main namespace when compiling the assembly. By default, it's
-        /// "GrappleFightScenes".</param>
+        /// <param name="namespaceName">The name of the main namespace when compiling the assembly. If this value is
+        /// null, then the namespace name of "Scenes". will be used.</param>
         /// <param name="filePaths">The FILE PATHS (not contents!) of the scene files to include.</param>
-        public SceneAssemblyBuilder(string namespaceName = "GrappleFightScenes", params string[] filePaths)
+        public SceneAssemblyBuilder(string? namespaceName = null, params string[] filePaths)
         {
-            (SceneContents, NamespaceName) = (
-                filePaths.Select(p => (Path.GetFileName(p), File.ReadAllText(p))).ToList(), namespaceName);
+            SceneContents = filePaths.Select(p => (Path.GetFileName(p), File.ReadAllText(p))).ToList();
+            NamespaceName = namespaceName ?? DefaultNamespace;
         }
 
         private const string _classHeader = @"public static class";
@@ -130,7 +131,7 @@ namespace GrappleFightBuilder
             string finalCode = GetFinalizedSource(serializer);
 
             CSharpCompilation comp = CSharpCompilation.Create(
-                assemblyName: "GrappleFightScripts",
+                assemblyName: "GrappleFightScenes",
                 syntaxTrees: new[] {CSharpSyntaxTree.ParseText(finalCode)},
                 references: DefaultReferences,
                 options: compilationOptions ?? new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
