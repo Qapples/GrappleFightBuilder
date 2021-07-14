@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using DefaultEcs;
-using DefaultEcs.Serialization;
-using GrappleFightNET5;
 using Microsoft.CodeAnalysis;
 
 namespace GrappleFightBuilder

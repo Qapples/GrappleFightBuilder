@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Text;
 using DefaultEcs;
 using DefaultEcs.Serialization;
-using GrappleFightNET5.Scenes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -36,7 +35,8 @@ namespace GrappleFightBuilder
 
         private static readonly string[] DefaultImports =
         {
-            "using System;", "using System.Diagnostics;", "using DefaultEcs;", "using Microsoft.Xna.Framework;"
+            "using System;", "using System.Diagnostics;", "using DefaultEcs;", "using Microsoft.Xna.Framework;",
+            "using DefaultEcs.Serialization;", "using System.IO;"
         };
 
         /// <summary>
@@ -63,7 +63,10 @@ namespace GrappleFightBuilder
         }
 
         private const string _classHeader = @"public static class";
-        private const string _dataHeader = @"public const string Base64WorldContets = ";
+        private const string _dataHeader = @"public static string Base64WorldContents = ";
+
+        private const string _worldField =
+            @"public static readonly World World = new BinarySerializer().Deserialize(new MemoryStream(Convert.FromBase64String(Base64WorldContents)));";
 
         private string GetFinalizedSource(ISerializer serializer)
         {
@@ -75,6 +78,7 @@ namespace GrappleFightBuilder
             {
                 final.Append($"{_classHeader} _{name.Remove(name.IndexOf('.'))}\n{{\n");
                 final.Append($"{_dataHeader} \"{GetBase64FromWorldContents(contents, serializer)}\";\n");
+                final.Append($"{_worldField}\n");
                 final.Append("}");
             }
 
@@ -111,9 +115,8 @@ namespace GrappleFightBuilder
             return builder.ToString();
         }
 
-        private static readonly BinarySerializationContext DefaultContext =
-            new BinarySerializationContext().Marshal<string, string>(_ => null);
-
+        private static readonly BinarySerializationContext DefaultContext = new();
+        
         /// <summary>
         /// Compiles an <see cref="Assembly"/> instance from the contents of the scene.
         /// </summary>
