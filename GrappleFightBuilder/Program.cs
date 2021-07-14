@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
+using DefaultEcs;
+using DefaultEcs.Serialization;
 using GrappleFightNET5;
+using Microsoft.CodeAnalysis;
 
 namespace GrappleFightBuilder
 {
@@ -9,16 +13,62 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            string[] fileContents = args[..^1].Select(File.ReadAllText).ToArray();
-            string outPath = args.Last();
+            // World testWorld = new();
+            // Entity testEntity = testWorld.CreateEntity();
+            // testEntity.Set<string>("Base");
+            //
+            // using MemoryStream stream = new(101);
+            // using var context = new BinarySerializationContext().Marshal<string, string>(_ => null);
+            // BinarySerializer serializer = new();
+            // byte[] bytes;
+            //
+            // serializer.Serialize(stream, testWorld);
+            // bytes = stream.ToArray();
+            //
+            // string base64String = Convert.ToBase64String(bytes);
+            // byte[] base64Bytes = Convert.FromBase64String(base64String);
+            // World outWorld = serializer.Deserialize(new MemoryStream(base64Bytes));
+            var (scriptDirectory, scriptOutput) = (@"Scripts/", "GrappleFightScripts.dll");
+            var (sceneDirectory, sceneOutput) = (@"Scenes/", "GrappleFightScenes.dll");
 
-            ScriptAssemblyBuilder scriptBuilder = new(null, null, null, fileContents);
+            foreach (string arg in args)
+            {
+                if (arg.StartsWith("--script_directory=")) scriptDirectory = arg[(arg.IndexOf('=') + 1)..];
+                if (arg.StartsWith("--scene_directory=")) sceneDirectory = arg[(arg.IndexOf('=') + 1)..];
+                
+                if (arg.StartsWith("--script_output=")) scriptOutput = arg[(arg.IndexOf('=') + 1)..];
+                if (arg.StartsWith("--scene_output=")) sceneOutput = arg[(arg.IndexOf('=') + 1)..];
+            }
 
-            Console.WriteLine($"Building the following scripts: {string.Join(' ', args[..^1])}");
-            var results = scriptBuilder.CompileIntoAssembly(outPath);
-            Console.WriteLine($"Output .dll to file path: {Path.GetFullPath(outPath)}");
+            string[] scriptContents = Directory.GetFiles(scriptDirectory).Select(File.ReadAllText).ToArray();
+            string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
+
+            Console.WriteLine("First building scripts, then building scenes.");
+
+            //Build scripts
+            ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
+
             Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n\n", results.Select(e => e.GetMessage()).ToArray())}");
+                $"Building the following scripts: {string.Join('\n', Directory.GetFiles(scriptDirectory))}");
+            var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
+            
+            Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
+                ? "Building scripts failed!"
+                : $"Output .dll to file path: {Path.GetFullPath(scriptOutput)}");
+            Console.WriteLine(
+                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => e.GetMessage()).ToArray())}\n");
+            
+            //Build scenes
+            SceneAssemblyBuilder sceneBuilder = new(null, scenePaths);
+            
+            Console.WriteLine($"Building the following scenes: {string.Join('\n', scenePaths)}");
+            var sceneResults = sceneBuilder.CompileIntoAssembly(sceneOutput);
+            
+            Console.WriteLine(sceneResults.Any(e => e.Severity == DiagnosticSeverity.Error)
+                ? "Building scenes failed!"
+                : $"Output .dll to file path: {Path.GetFullPath(sceneOutput)}");
+            Console.WriteLine(
+                $"Diagnostic results:\n{string.Join("\n", sceneResults.Select(e => e.GetMessage()).ToArray())}");
         }
     }
 }
