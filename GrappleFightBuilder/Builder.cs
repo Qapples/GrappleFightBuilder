@@ -72,23 +72,24 @@ namespace GrappleFightBuilder
                 contents[((imports.Length > 0 ? contents.IndexOf(imports.Last()) + imports.Last().Length : -1) + 1)..];
             Body.Append(body);
         }
-        
+
         /// <summary>
         /// Compiles the script from <see cref="Body"/> with the imports from <see cref="Imports"/> into an
         /// <see cref="Assembly"/> that can be referenced and invoked.
         /// </summary>
         /// <param name="filePath">The file path describing where to write the compiled assembly to.</param>
+        /// <param name="assemblyName">The name of the assembly.</param>
         /// <param name="compilationOptions">Additional <see cref="CSharpCompilationOptions"/> that change how the
         /// script is compiled. By default, a new <see cref="CSharpCompilationOptions"/> instance with an
         /// <see cref="OutputKind"/> of <see cref="OutputKind.DynamicallyLinkedLibrary"/>.</param>
         /// <returns>An <see cref="ImmutableArray"/> with any warnings or errors from the compilation.</returns>
-        public virtual ImmutableArray<Diagnostic> CompileIntoAssembly(string filePath,
+        public virtual ImmutableArray<Diagnostic> CompileIntoAssembly(string filePath, string assemblyName,
             CSharpCompilationOptions? compilationOptions = null)
         {
            string finalCode = GenerateFinalizedSource();
 
             CSharpCompilation comp = CSharpCompilation.Create(
-                assemblyName: "GrappleFightScripts",
+                assemblyName: assemblyName,
                 syntaxTrees: new[] {CSharpSyntaxTree.ParseText(finalCode)},
                 references: References,
                 options: compilationOptions ?? new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

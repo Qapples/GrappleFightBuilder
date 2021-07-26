@@ -31,7 +31,7 @@ namespace GrappleFightBuilder
 
             Console.WriteLine(
                 $"Building the following scripts: {string.Join('\n', Directory.GetFiles(scriptDirectory))}");
-            var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
+            var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput, "GrappleFightScripts");
             
             Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
                 ? "Building scripts failed!"
@@ -44,7 +44,7 @@ namespace GrappleFightBuilder
             
             Console.WriteLine(
                 $"Building the following scripts: {string.Join('\n', Directory.GetFiles(systemDirectory))}");
-            var systemResults = systemBuilder.CompileIntoAssembly(systemOutput);
+            var systemResults = systemBuilder.CompileIntoAssembly(systemOutput, "GrappleFightSystems");
             
             Console.WriteLine(systemResults.Any(e => e.Severity == DiagnosticSeverity.Error)
                 ? "Building scripts failed!"
