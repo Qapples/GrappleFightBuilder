@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using DefaultEcs;
 using DefaultEcs.Serialization;
@@ -19,25 +22,9 @@ namespace GrappleFightBuilder
     /// Class that is used for constructing <see cref="Assembly"/> instances from files that describe a
     /// <see cref="DefaultEcs.World"/>
     /// </summary>
-    public class SceneAssemblyBuilder
+    public class SceneAssemblyBuilder : Builder
     {
         private const string DefaultNamespace = "SceneData";
-
-        private static readonly MetadataReference[] DefaultReferences = new[]
-        {
-            Assembly.GetAssembly(typeof(Entity)).Location, Assembly.GetAssembly(typeof(GameTime)).Location,
-            AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
-            Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location),
-                "System.Runtime.dll"),
-            Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
-            Assembly.GetAssembly(typeof(System.Runtime.GCSettings)).Location
-        }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
-
-        private static readonly string[] DefaultImports =
-        {
-            "using System;", "using System.Diagnostics;", "using DefaultEcs;", "using Microsoft.Xna.Framework;",
-            "using DefaultEcs.Serialization;", "using System.IO;"
-        };
 
         /// <summary>
         /// A list of the each scene's file contents and name.
@@ -68,14 +55,18 @@ namespace GrappleFightBuilder
         private const string _worldField =
             @"public static readonly World World = new BinarySerializer().Deserialize(new MemoryStream(Convert.FromBase64String(Base64WorldContents)));";
 
+        private const string _interfaceName = "IWorldDataInterface";
+
         private const string _dataInterface =
-            @"public interface IWorldDataInterface
+            @"public interface " + _interfaceName + @"
             {
                 public static string Base64WorldContents;
                 public static readonly World World;
             }";
+        
+        private const string _exampleClass = "public static class Example{}";
 
-        private string GetFinalizedSource(ISerializer serializer)
+        private string GetFinalizedSource(BinarySerializer serializer)
         {
             StringBuilder final = new();
 
@@ -85,17 +76,18 @@ namespace GrappleFightBuilder
             {
                 final.Append($"{_classHeader} _{name.Remove(name.IndexOf('.'))}\n{{\n");
                 final.Append($"{_dataHeader} \"{GetBase64FromWorldContents(contents, serializer)}\";\n");
-                final.Append($"{_worldField}\n");
-                final.Append("}");
+                final.Append(_worldField + '\n');
+                final.Append("}\n");
             }
 
-            final.Append(_dataInterface);
+            final.Append(_exampleClass + '\n');
+            final.Append(_dataInterface + '\n');
             final.Append("}"); //closing bracket from the namespace
 
             return final.ToString();
         }
 
-        private string GetBase64FromWorldContents(string worldContents, ISerializer serializer)
+        private string GetBase64FromWorldContents(string worldContents, BinarySerializer serializer)
         {
             //convert into world first
             TextSerializer textSerializer = new();
@@ -110,17 +102,6 @@ namespace GrappleFightBuilder
             }
 
             return Convert.ToBase64String(bytes);
-        }
-
-        private string GetHeader(IEnumerable<string> imports)
-        {
-            StringBuilder builder = new();
-
-            foreach (string import in imports) builder.Append(import + '\n');
-            builder.Append('\n');
-            builder.Append($"namespace {NamespaceName}\n{{\n");
-
-            return builder.ToString();
         }
 
         private static readonly BinarySerializationContext DefaultContext = new();
@@ -141,13 +122,13 @@ namespace GrappleFightBuilder
         {
             BinarySerializer serializer = new(context ?? DefaultContext);
             string finalCode = GetFinalizedSource(serializer);
-
+            
             CSharpCompilation comp = CSharpCompilation.Create(
                 assemblyName: "GrappleFightScenes",
                 syntaxTrees: new[] {CSharpSyntaxTree.ParseText(finalCode)},
                 references: DefaultReferences,
                 options: compilationOptions ?? new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
+            
             using MemoryStream ms = new();
 
             EmitResult result = comp.Emit(ms);
