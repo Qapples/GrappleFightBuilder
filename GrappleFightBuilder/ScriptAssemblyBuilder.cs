@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using DefaultEcs;
 using GrappleFightNET5.Components.Script;
-using GrappleFightNET5.Scenes.Info;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;

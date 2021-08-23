@@ -10,6 +10,9 @@
       <Reference Include="GrappleFightNET5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFightNET5\GrappleFightNET5\bin\Debug\net5.0\GrappleFightNET5.dll</HintPath>
       </Reference>
+      <Reference Include="GrappleFightNET5.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Components\bin\Debug\net5.0\GrappleFightNET5.Components.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFightScripts, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>bin\Debug\net5.0\GrappleFightScripts.dll</HintPath>
       </Reference>
@@ -18,7 +21,7 @@
     <ItemGroup>
       <PackageReference Include="DefaultEcs" Version="0.16.0" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.0-1.final" />
-      <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.1986-develop" />
+      <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2000-develop" />
     </ItemGroup>
 
 </Project>
