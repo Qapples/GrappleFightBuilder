@@ -9,8 +9,8 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            var (scriptDirectory, scriptOutput) = (@"Scripts/", "GrappleFightScripts.dll");
-            var (sceneDirectory, sceneOutput) = (@"Scenes/", "GrappleFightScenes.dll");
+            var (scriptDirectory, scriptOutput) = (@"Scripts", "GrappleFightScripts.dll");
+            var (sceneDirectory, sceneOutput) = (@"Scenes", "GrappleFightScenes.dll");
 
             foreach (string arg in args)
             {
@@ -19,6 +19,12 @@ namespace GrappleFightBuilder
                 
                 if (arg.StartsWith("--script_output=")) scriptOutput = arg[(arg.IndexOf('=') + 1)..];
                 if (arg.StartsWith("--scene_output=")) sceneOutput = arg[(arg.IndexOf('=') + 1)..];
+            }
+
+            if (!Directory.Exists(scriptDirectory))
+            {
+                Console.WriteLine("Cannot find script directory! Creating new empty script directory");
+                Directory.CreateDirectory(sceneDirectory);
             }
 
             string[] scriptContents = Directory.GetFiles(scriptDirectory).Select(File.ReadAllText).ToArray();

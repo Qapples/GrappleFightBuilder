@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using DefaultEcs;
-using GrappleFightNET5.Components.Script;
+using GrappleFightNET5.Components;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -202,11 +202,11 @@ namespace GrappleFightBuilder
                 Script script = new();
                 var (initMethod, updateMethod) = (type.GetMethod("Init"), type.GetMethod("Update"));
 
-                if (initMethod is not null) script.Init = initMethod.CreateDelegate<ScriptHelper.InitDelegate>();
+                if (initMethod is not null) script.Init = initMethod.CreateDelegate<Script.InitDelegate>();
                 if (updateMethod is not null)
                 {
                     //this line is too long for a one liner rip
-                    script.Update = updateMethod.CreateDelegate<ScriptHelper.UpdateDelegate>();
+                    script.Update = updateMethod.CreateDelegate<Script.UpdateDelegate>();
                 }
                 
                 if (initMethod is not null || updateMethod is not null) outList.Add(script);
@@ -236,11 +236,11 @@ namespace GrappleFightBuilder
             var (initMethod, updateMethod) = (classType?.GetMethod("Init"),
                 classType?.GetMethod("Update"));
             
-            if (initMethod is not null) script.Init = initMethod.CreateDelegate<ScriptHelper.InitDelegate>();
+            if (initMethod is not null) script.Init = initMethod.CreateDelegate<Script.InitDelegate>();
             if (updateMethod is not null)
             {
                 //this line is too long for a one liner rip
-                script.Update = updateMethod.CreateDelegate<ScriptHelper.UpdateDelegate>();
+                script.Update = updateMethod.CreateDelegate<Script.UpdateDelegate>();
             }
 
             if (initMethod is not null || updateMethod is not null)
