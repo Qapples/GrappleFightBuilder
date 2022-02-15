@@ -41,9 +41,7 @@ namespace GrappleFightBuilder
                 return;
             }
 
-            string[] scriptContents = searchSubDir
-                ? GetScriptsInSubdirectories(scriptDirectory).ToArray()
-                : Directory.GetFiles(scriptDirectory).Select(File.ReadAllText).ToArray();
+            var (scriptContents, scriptLocations) = GetScriptsInSubdirectories(scriptDirectory, searchSubDir);
             string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
 
             Console.WriteLine("\nBUILDING SCRIPTS (THEN SCENES)\n");
@@ -52,15 +50,15 @@ namespace GrappleFightBuilder
             ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
 
             Console.WriteLine(
-                $"Building the following scripts: {string.Join('\n', Directory.GetFiles(scriptDirectory))}");
+                $"Building the following scripts: {string.Join('\n', scriptLocations)}");
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
 
             Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
                 ? "Building scripts failed!"
                 : $"Output .dll to file path: {Path.GetFullPath(scriptOutput)}");
             Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => $"{e.GetMessage()} {e.Location}").ToArray())}\n");
-            
+                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}\n");
+
             //Build scenes
             
             Console.WriteLine("FINISHED BUILDING SCRIPTS. BUILDING SCENES NOW.\n");
@@ -77,18 +75,29 @@ namespace GrappleFightBuilder
                 $"Diagnostic results:\n{string.Join("\n", sceneResults.Select(e => e.GetMessage()).ToArray())}");
         }
 
-        static List<string> GetScriptsInSubdirectories(string directory)
+        static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
+            bool searchSubDir = false)
         {
-            List<string> output = (from dir in Directory.GetFiles(directory)
-                where Path.GetExtension(dir) == ".cs"
-                select File.ReadAllText(dir)).ToList();
+            List<string> outputContents = new();
+            List<string> outputLocations = new();
 
-            foreach (string dir in Directory.GetDirectories(directory))
+            foreach (string dir in Directory.GetFiles(directory).Where(e => Path.GetExtension(e) == ".cs"))
             {
-                output.AddRange(GetScriptsInSubdirectories(dir));
+                outputContents.Add(File.ReadAllText(dir));
+                outputLocations.Add(dir);
             }
 
-            return output;
+            if (searchSubDir)
+            {
+                foreach (string dir in Directory.GetDirectories(directory))
+                {
+                    var (contents, locations) = GetScriptsInSubdirectories(dir, searchSubDir);
+                    outputContents.AddRange(contents);
+                    outputLocations.AddRange(locations);
+                }
+            }
+
+            return (outputContents.ToArray(), outputLocations.ToArray());
         }
     }
 }
