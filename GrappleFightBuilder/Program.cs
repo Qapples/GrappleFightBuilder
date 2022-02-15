@@ -44,35 +44,23 @@ namespace GrappleFightBuilder
             var (scriptContents, scriptLocations) = GetScriptsInSubdirectories(scriptDirectory, searchSubDir);
             string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
 
-            Console.WriteLine("\nBUILDING SCRIPTS (THEN SCENES)\n");
-            
             //Build scripts
+            Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
+            Console.WriteLine($"{string.Join('\n', scriptLocations)}");
+            
             ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
-
-            Console.WriteLine(
-                $"Building the following scripts: {string.Join('\n', scriptLocations)}");
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
+            bool compileError = scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error);
 
-            Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
-                ? "Building scripts failed!"
-                : $"Output .dll to file path: {Path.GetFullPath(scriptOutput)}");
+            //Diagnostic results
+            Console.WriteLine($@"=========================================================
+Output .dll to file path: {Path.GetFullPath(sceneOutput)}
+=========================================================");
             Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}\n");
+                $"================ DIAGNOSTIC RESULTS ({(compileError ? "ERROR" : "OK")}) ================");
+            Console.WriteLine($"{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}\n");
 
-            //Build scenes
-            
-            Console.WriteLine("FINISHED BUILDING SCRIPTS. BUILDING SCENES NOW.\n");
-            return;
-            SceneAssemblyBuilder sceneBuilder = new(null, scenePaths);
-            
-            Console.WriteLine($"Building the following scenes: {string.Join('\n', scenePaths)}");
-            var sceneResults = sceneBuilder.CompileIntoAssembly(sceneOutput);
-            
-            Console.WriteLine(sceneResults.Any(e => e.Severity == DiagnosticSeverity.Error)
-                ? "Building scenes failed!"
-                : $"Output .dll to file path: {Path.GetFullPath(sceneOutput)}");
-            Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", sceneResults.Select(e => e.GetMessage()).ToArray())}");
+            Console.WriteLine("FINISH");
         }
 
         static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
