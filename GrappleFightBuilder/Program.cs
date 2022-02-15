@@ -16,10 +16,10 @@ namespace GrappleFightBuilder
 
             bool searchSubDir = false;
 
-            Console.WriteLine(args.Length);
+            //Console.WriteLine(args.Length);
             foreach (string arg in args)
             {
-                Console.WriteLine(arg);
+                //Console.WriteLine(arg);
                 string argVal = arg[(arg.IndexOf('=') + 1)..];
 
                 if (arg.StartsWith("--script_directory=")) scriptDirectory = argVal;
@@ -46,7 +46,7 @@ namespace GrappleFightBuilder
                 : Directory.GetFiles(scriptDirectory).Select(File.ReadAllText).ToArray();
             string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
 
-            Console.WriteLine("First building scripts, then building scenes.");
+            Console.WriteLine("\nBUILDING SCRIPTS (THEN SCENES)\n");
             
             //Build scripts
             ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
@@ -54,14 +54,16 @@ namespace GrappleFightBuilder
             Console.WriteLine(
                 $"Building the following scripts: {string.Join('\n', Directory.GetFiles(scriptDirectory))}");
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
-            
+
             Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
                 ? "Building scripts failed!"
                 : $"Output .dll to file path: {Path.GetFullPath(scriptOutput)}");
             Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => e.GetMessage()).ToArray())}\n");
+                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => $"{e.GetMessage()} {e.Location}").ToArray())}\n");
             
             //Build scenes
+            
+            Console.WriteLine("FINISHED BUILDING SCRIPTS. BUILDING SCENES NOW.\n");
             return;
             SceneAssemblyBuilder sceneBuilder = new(null, scenePaths);
             
