@@ -121,10 +121,15 @@ namespace GrappleFightBuilder
         public void AddScript(string scriptContents)
         {
             string[] imports = GetImports(scriptContents, out int len);
+            if (imports.Length != 0)
+            {
+                len += scriptContents.IndexOf(imports.First());
+            }
+            
             Imports.AddRange(imports.Where(e => !Imports.Contains(e))); //don't add already existing references
 
             //substring past the header.
-            string body = scriptContents[(scriptContents.IndexOf(imports.First()) + len)..];
+            string body = scriptContents[len..];
             Body.Append(body);
         }
 
