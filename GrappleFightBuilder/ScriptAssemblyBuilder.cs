@@ -120,11 +120,11 @@ namespace GrappleFightBuilder
         /// <param name="scriptContents">The contents of the script to add. (Not the file name).</param>
         public void AddScript(string scriptContents)
         {
-            string[] imports = GetImports(scriptContents);
+            string[] imports = GetImports(scriptContents, out int len);
             Imports.AddRange(imports.Where(e => !Imports.Contains(e))); //don't add already existing references
 
             //substring past the header.
-            string body = scriptContents[((imports.Length > 0 ? scriptContents.IndexOf(imports.Last()) : -1) + 1)..];
+            string body = scriptContents[(scriptContents.IndexOf(imports.First()) + len)..];
             Body.Append(body);
         }
 
@@ -255,8 +255,13 @@ namespace GrappleFightBuilder
             return false;
         }
 
-        private static string[] GetImports(in string value) =>
-            Regex.Matches(value, "using.+").Select(e => e.Value).ToArray();
+        private static string[] GetImports(string value, out int len)
+        {
+            string[] matches = Regex.Matches(value, "using.+").Select(e => e.Value).ToArray();
+            len = matches.Sum(e => e.Length);
+
+            return matches;
+        }
 
         private string GetHeader(IEnumerable<string> imports)
         {
