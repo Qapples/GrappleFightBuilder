@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -9,48 +11,81 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            var (scriptDirectory, scriptOutput) = (@"Scripts/", "GrappleFightScripts.dll");
-            var (systemDirectory, systemOutput) = (@"Systems/", "GrappleFightSystems.dll");
+            var (scriptDirectory, scriptOutput) = (@"Scripts", "GrappleFightScripts.dll");
+            var (sceneDirectory, sceneOutput) = (@"Scenes", "GrappleFightScenes.dll");
 
+            bool searchSubDir = false;
+
+            //Console.WriteLine(args.Length);
             foreach (string arg in args)
             {
-                if (arg.StartsWith("--script_directory=")) scriptDirectory = arg[(arg.IndexOf('=') + 1)..];
-                if (arg.StartsWith("--system_directory=")) systemDirectory = arg[(arg.IndexOf('=') + 1)..];
-                
-                if (arg.StartsWith("--script_output=")) scriptOutput = arg[(arg.IndexOf('=') + 1)..];
-                if (arg.StartsWith("--system_output=")) systemOutput = arg[(arg.IndexOf('=') + 1)..];
+                //Console.WriteLine(arg);
+                string argVal = arg[(arg.IndexOf('=') + 1)..];
+
+                if (arg.StartsWith("--script_directory=")) scriptDirectory = argVal;
+                if (arg.StartsWith("--scene_directory=")) sceneDirectory = argVal;
+
+                if (arg.StartsWith("--script_output=")) scriptOutput = argVal;
+                if (arg.StartsWith("--scene_output=")) sceneOutput = argVal;
+
+                if (arg.StartsWith("--search_subdirectories"))
+                {
+                    bool parse = bool.TryParse(argVal, out searchSubDir);
+                    searchSubDir = parse && searchSubDir;
+                }
             }
 
-            string[] scriptContents = Directory.GetFiles(scriptDirectory).Select(File.ReadAllText).ToArray();
-            string[] systemContents = Directory.GetFiles(systemDirectory).Select(File.ReadAllText).ToArray();
+            if (!Directory.Exists(scriptDirectory))
+            {
+                Console.WriteLine($"Cannot find script directory ({scriptDirectory})!"); 
+                return;
+            }
 
-            Console.WriteLine("First building scripts, then building systems.");
+            var (scriptContents, scriptLocations) = GetScriptsInSubdirectories(scriptDirectory, searchSubDir);
+            string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
 
             //Build scripts
+            Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
+            Console.WriteLine($"{string.Join('\n', scriptLocations)}");
+            
             ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
+            var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
+            bool compileError = scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error);
 
+            //Diagnostic results
+            Console.WriteLine($@"=========================================================
+Output .dll to file path: {Path.GetFullPath(scriptOutput)}
+=========================================================");
             Console.WriteLine(
-                $"Building the following scripts: {string.Join('\n', Directory.GetFiles(scriptDirectory))}");
-            var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput, "GrappleFightScripts");
-            
-            Console.WriteLine(scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error)
-                ? "Building scripts failed!"
-                : $"Output .dll to file path: {Path.GetFullPath(scriptOutput)}");
-            Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", scriptResults.Select(e => e.GetMessage()).ToArray())}\n");
+                $"================ DIAGNOSTIC RESULTS ({(compileError ? "ERROR" : "OK")}) ================");
+            Console.WriteLine($"{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}\n");
 
-            //Build systems
-            SystemAssemblyBuilder systemBuilder = new(null, null, null, systemContents);
-            
-            Console.WriteLine(
-                $"Building the following scripts: {string.Join('\n', Directory.GetFiles(systemDirectory))}");
-            var systemResults = systemBuilder.CompileIntoAssembly(systemOutput, "GrappleFightSystems");
-            
-            Console.WriteLine(systemResults.Any(e => e.Severity == DiagnosticSeverity.Error)
-                ? "Building scripts failed!"
-                : $"Output .dll to file path: {Path.GetFullPath(systemOutput)}");
-            Console.WriteLine(
-                $"Diagnostic results:\n{string.Join("\n", systemResults.Select(e => e.GetMessage()).ToArray())}\n");
+            Console.WriteLine("FINISH");
+        }
+
+        static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
+            bool searchSubDir = false)
+        {
+            List<string> outputContents = new();
+            List<string> outputLocations = new();
+
+            foreach (string dir in Directory.GetFiles(directory).Where(e => Path.GetExtension(e) == ".cs"))
+            {
+                outputContents.Add(File.ReadAllText(dir));
+                outputLocations.Add(dir);
+            }
+
+            if (searchSubDir)
+            {
+                foreach (string dir in Directory.GetDirectories(directory))
+                {
+                    var (contents, locations) = GetScriptsInSubdirectories(dir, searchSubDir);
+                    outputContents.AddRange(contents);
+                    outputLocations.AddRange(locations);
+                }
+            }
+
+            return (outputContents.ToArray(), outputLocations.ToArray());
         }
     }
 }
