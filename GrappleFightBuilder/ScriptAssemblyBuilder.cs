@@ -32,12 +32,13 @@ namespace GrappleFightBuilder
             AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
-            Assembly.GetAssembly(typeof(System.Runtime.GCSettings)).Location
+            Assembly.GetAssembly(typeof(IScript)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
         {
-            "using System;", "using System.Diagnostics;", "using DefaultEcs;", "using Microsoft.Xna.Framework;"
+            "using System;", "using System.Diagnostics;", "using GrappleFightNET5.Components;", 
+            "using DefaultEcs;", "using Microsoft.Xna.Framework;"
         };
         
         /// <summary>
@@ -191,75 +192,7 @@ namespace GrappleFightBuilder
 
             return result.Diagnostics;
         }
-
-        /// <summary>
-        /// Gets <see cref="Script"/> instances from an <see cref="Assembly"/>.
-        /// </summary>
-        /// <param name="assembly"><see cref="Assembly"/> to get the <see cref="Script"/> instances from.</param>
-        /// <returns>An array of <see cref="Script"/> with <see cref="Script.Init"/> and <see cref="Script.Update"/>
-        /// delegates from the provided <see cref="Assembly"/>.</returns>
-        public static Script[] GetScriptsFromAssembly(Assembly assembly)
-        {
-            List<Script> outList = new();
-
-            foreach (Type type in assembly.GetTypes())
-            {
-                Script script = new();
-                var (initMethod, updateMethod) = (type.GetMethod("Init"), type.GetMethod("Update"));
-
-                if (initMethod is not null) script.Init = initMethod.CreateDelegate<Script.InitDelegate>();
-                if (updateMethod is not null)
-                {
-                    //this line is too long for a one liner rip
-                    script.Update = updateMethod.CreateDelegate<Script.UpdateDelegate>();
-                }
-                
-                if (initMethod is not null || updateMethod is not null) outList.Add(script);
-            }
-
-            return outList.ToArray();
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Script"/> instance from an <see cref="Assembly"/> from a specified class name.
-        /// </summary>
-        /// <param name="assembly"><see cref="Assembly"/> to get the <see cref="Script"/> instances from.</param>
-        /// <returns>An array of <see cref="Script"/> with <see cref="Script.Init"/> and <see cref="Script.Update"/>
-        /// delegates from the provided <see cref="Assembly"/>.</returns>
-        /// <param name="className">The class name to get the <see cref="Script.Init"/> and <see cref="Script.Update"/>
-        /// methods from. </param>
-        /// <param name="outScript">The <see cref="Script"/> with the Init/Update methods loaded in from the assembly.
-        /// </param>
-        /// <returns>If true is returned, then the script was obtained successfully with either
-        /// <see cref="Script.Init"/> or <see cref="Script.Update"/> having values. If false is returned, then neither
-        /// <see cref="Script.Init"/> or <see cref="Script.Update"/> were obtained succesfully.</returns>
-        public static bool TryGetScriptFromAssembly(Assembly assembly, string className, out Script outScript)
-        {
-            Script script = new();
-            Type? classType = assembly.GetTypes().First(e => e.Name == className);
-
-            var (initMethod, updateMethod) = (classType?.GetMethod("Init"),
-                classType?.GetMethod("Update"));
-            
-            if (initMethod is not null) script.Init = initMethod.CreateDelegate<Script.InitDelegate>();
-            if (updateMethod is not null)
-            {
-                //this line is too long for a one liner rip
-                script.Update = updateMethod.CreateDelegate<Script.UpdateDelegate>();
-            }
-
-            if (initMethod is not null || updateMethod is not null)
-            {
-                outScript = script;
-                return true;
-            }
-
-            Debug.WriteLine(
-                $"TryGetScriptFromAssembly failed. Returning null. Class name: {className}. Assembly: {assembly}.");
-            outScript = script;
-            return false;
-        }
-
+        
         private static string[] GetImports(string value, out int len)
         {
             string[] matches = Regex.Matches(value, "using.+").Select(e => e.Value).ToArray();
