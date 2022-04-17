@@ -128,7 +128,8 @@ namespace GrappleFightBuilder
                 len += scriptContents.IndexOf(imports.First());
             }
             
-            Imports.AddRange(imports.Where(e => !Imports.Contains(e))); //don't add already existing references
+            //don't add already existing references
+            Imports.AddRange(imports.Where(e => !Imports.Contains(e.Trim())));
 
             //substring past the header.
             string body = scriptContents[len..];
@@ -196,7 +197,9 @@ namespace GrappleFightBuilder
         
         private static string[] GetImports(string value, out int len)
         {
-            string[] matches = Regex.Matches(value, "using.+").Select(e => e.Value).ToArray();
+            //normalize all line endings to be Environment.NewLine
+            string[] matches = Regex.Matches(value, "using.+")
+                .Select(e => Regex.Replace(e.Value, @"\r\n|\n\r|\n|\r", Environment.NewLine)).ToArray();
             len = matches.Sum(e => e.Length);
 
             return matches;

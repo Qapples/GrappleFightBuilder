@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 
 namespace GrappleFightBuilder
@@ -71,7 +72,8 @@ Output .dll to file path: {Path.GetFullPath(scriptOutput)}
 
             foreach (string dir in Directory.GetFiles(directory).Where(e => Path.GetExtension(e) == ".cs"))
             {
-                outputContents.Add(File.ReadAllText(dir));
+                //normalize line endings to be Environment.NewLine
+                outputContents.Add(Regex.Replace(File.ReadAllText(dir), @"\r\n|\n\r|\n|\r", Environment.NewLine));
                 outputLocations.Add(dir);
             }
 
