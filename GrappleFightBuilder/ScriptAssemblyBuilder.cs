@@ -199,8 +199,8 @@ namespace GrappleFightBuilder
         {
             //normalize all line endings to be Environment.NewLine
             string[] matches = Regex.Matches(value, "using.+")
-                .Select(e => Regex.Replace(e.Value, @"\r\n|\n\r|\n|\r", Environment.NewLine)).ToArray();
-            len = matches.Sum(e => e.Length);
+                .Select(e => Regex.Replace(e.Value, @"\r\n|\n\r|\n|\r", "")).ToArray();
+            len = matches.Sum(e => e.Length + Environment.NewLine.Length);
 
             return matches;
         }
