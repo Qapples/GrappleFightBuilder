@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using DefaultEcs;
 using GrappleFightNET5.Components;
+using GrappleFightNET5.Input;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -32,7 +33,7 @@ namespace GrappleFightBuilder
             AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
-            Assembly.GetAssembly(typeof(IScript)).Location
+            Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
@@ -127,7 +128,8 @@ namespace GrappleFightBuilder
                 len += scriptContents.IndexOf(imports.First());
             }
             
-            Imports.AddRange(imports.Where(e => !Imports.Contains(e))); //don't add already existing references
+            //don't add already existing references
+            Imports.AddRange(imports.Where(e => !Imports.Contains(e.Trim())));
 
             //substring past the header.
             string body = scriptContents[len..];
@@ -195,7 +197,9 @@ namespace GrappleFightBuilder
         
         private static string[] GetImports(string value, out int len)
         {
-            string[] matches = Regex.Matches(value, "using.+").Select(e => e.Value).ToArray();
+            //normalize all line endings to be Environment.NewLine
+            string[] matches = Regex.Matches(value, "using.+")
+                .Select(e => Regex.Replace(e.Value, @"\r\n|\n\r|\n|\r", Environment.NewLine)).ToArray();
             len = matches.Sum(e => e.Length);
 
             return matches;

@@ -13,6 +13,9 @@
       <Reference Include="GrappleFightNET5.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Components\bin\Debug\net5.0\GrappleFightNET5.Components.dll</HintPath>
       </Reference>
+      <Reference Include="GrappleFightNET5.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Input\bin\Debug\net5.0\GrappleFightNET5.Input.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFightScripts, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>bin\Debug\net5.0\GrappleFightScripts.dll</HintPath>
       </Reference>
