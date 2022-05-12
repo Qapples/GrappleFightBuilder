@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using DefaultEcs;
+using GrappleFightNET5.Collision;
 using GrappleFightNET5.Components;
 using GrappleFightNET5.Input;
 using Microsoft.CodeAnalysis;
@@ -33,7 +34,8 @@ namespace GrappleFightBuilder
             AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
-            Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location
+            Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location,
+            Assembly.GetAssembly(typeof(ICollisionHull)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
