@@ -11,7 +11,7 @@
         <HintPath>..\..\GrappleFightNET5\GrappleFightNET5\bin\Debug\net5.0\GrappleFightNET5.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFightNET5.Collision, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Collision\bin\Release\net5.0\GrappleFightNET5.Collision.dll</HintPath>
+        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Collision\bin\Debug\net5.0\GrappleFightNET5.Collision.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFightNET5.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Components\bin\Debug\net5.0\GrappleFightNET5.Components.dll</HintPath>
