@@ -11,6 +11,7 @@ using DefaultEcs;
 using GrappleFightNET5.Collision;
 using GrappleFightNET5.Components;
 using GrappleFightNET5.Input;
+using GrappleFightNET5.Network;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -35,7 +36,7 @@ namespace GrappleFightBuilder
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
             Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location,
-            Assembly.GetAssembly(typeof(ICollisionHull)).Location
+            Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
