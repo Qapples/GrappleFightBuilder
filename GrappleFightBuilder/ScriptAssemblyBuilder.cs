@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Xna.Framework;
+using SharpGLTF.Schema2;
 
 namespace GrappleFightBuilder
 {
@@ -36,7 +37,8 @@ namespace GrappleFightBuilder
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
             Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location,
-            Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location
+            Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location,
+            Assembly.GetAssembly(typeof(Animation)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
