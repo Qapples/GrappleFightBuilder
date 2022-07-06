@@ -4,9 +4,12 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using AppleScene.Helpers;
+using AppleScene.Rendering;
 using DefaultEcs;
 using GrappleFightNET5.Collision;
 using GrappleFightNET5.Components;
@@ -35,10 +38,12 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(Entity)).Location, Assembly.GetAssembly(typeof(GameTime)).Location,
             AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
-            Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(System.Object)).Location,
+            Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(object)).Location,
             Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location,
             Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location,
-            Assembly.GetAssembly(typeof(Animation)).Location
+            Assembly.GetAssembly(typeof(Animation)).Location, Assembly.GetAssembly(typeof(MeshData)).Location,
+            Assembly.GetAssembly(typeof(Matrix4x4)).Location, Assembly.GetAssembly(typeof(NumericsExtensions)).Location,
+            Path.Combine(Assembly.GetAssembly(typeof(object)).Location, "..", "System.Numerics.Vectors.dll"),
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
