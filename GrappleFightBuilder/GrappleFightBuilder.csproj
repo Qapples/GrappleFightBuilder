@@ -41,7 +41,7 @@
       <PackageReference Include="DefaultEcs" Version="0.17.2" />
       <PackageReference Include="LiteNetLib" Version="1.0.0-rc.2" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.0-1.final" />
-      <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.2000-develop" />
+      <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
       <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0023" />
     </ItemGroup>
 
