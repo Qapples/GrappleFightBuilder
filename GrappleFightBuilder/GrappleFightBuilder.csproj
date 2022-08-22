@@ -2,40 +2,38 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="AppleScene.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\AppleScene\AppleScene.Rendering\bin\Debug\net5.0\AppleScene.Helpers.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Helpers.dll</HintPath>
       </Reference>
       <Reference Include="AppleScene.Rendering, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\AppleScene\AppleScene.Rendering\bin\Debug\net5.0\AppleScene.Rendering.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Rendering.dll</HintPath>
       </Reference>
       <Reference Include="AppleScene.Skinning, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\AppleScene\AppleScene.Rendering\bin\Debug\net5.0\AppleScene.Skinning.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Skinning.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5\bin\Debug\net5.0\GrappleFightNET5.dll</HintPath>
+      <Reference Include="GrappleFight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight\bin\Debug\net6.0\GrappleFight.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5.Collision, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Collision\bin\Debug\net5.0\GrappleFightNET5.Collision.dll</HintPath>
+      <Reference Include="GrappleFight.Collision, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight.Collision\bin\Debug\net6.0\GrappleFight.Collision.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Components\bin\Debug\net5.0\GrappleFightNET5.Components.dll</HintPath>
+      <Reference Include="GrappleFight.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight.Components\bin\Debug\net6.0\GrappleFight.Components.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Input\bin\Debug\net5.0\GrappleFightNET5.Input.dll</HintPath>
+      <Reference Include="GrappleFight.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight.Input\bin\Debug\net6.0\GrappleFight.Input.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5.Network, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Network\bin\Debug\net5.0\GrappleFightNET5.Network.dll</HintPath>
+      <Reference Include="GrappleFight.Network, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight.Network\bin\Debug\net6.0\GrappleFight.Network.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFightNET5.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFightNET5\GrappleFightNET5.Utils\bin\Debug\net5.0\GrappleFightNET5.Utils.dll</HintPath>
-      </Reference>
-      <Reference Include="GrappleFightScripts, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>bin\Debug\net5.0\GrappleFightScripts.dll</HintPath>
+      <Reference Include="GrappleFight.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight.Utils\bin\Debug\net6.0\GrappleFight.Utils.dll</HintPath>
       </Reference>
     </ItemGroup>
 

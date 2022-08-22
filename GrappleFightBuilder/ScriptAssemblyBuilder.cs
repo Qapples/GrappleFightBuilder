@@ -11,11 +11,11 @@ using System.Text.RegularExpressions;
 using AppleScene.Helpers;
 using AppleScene.Rendering;
 using DefaultEcs;
-using GrappleFightNET5.Collision;
-using GrappleFightNET5.Components;
-using GrappleFightNET5.Input;
-using GrappleFightNET5.Network;
-using GrappleFightNET5.Utils;
+using GrappleFight.Collision;
+using GrappleFight.Components;
+using GrappleFight.Input;
+using GrappleFight.Network;
+using GrappleFight.Utils;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -49,12 +49,12 @@ namespace GrappleFightBuilder
             Path.Combine(Assembly.GetAssembly(typeof(object)).Location, "..", "System.Collections.dll"),
             Assembly.GetAssembly(typeof(IEnumerable<>)).Location,
             Assembly.GetAssembly(typeof(System.Linq.Enumerable)).Location,
-            Assembly.GetAssembly(typeof(MonogameExtensions)).Location
+            Assembly.GetAssembly(typeof(MonogameExtensions)).Location,
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
         {
-            "using System;", "using System.Diagnostics;", "using GrappleFightNET5.Components;", 
+            "using System;", "using System.Diagnostics;", "using GrappleFight.Components;", 
             "using DefaultEcs;", "using Microsoft.Xna.Framework;"
         };
         
