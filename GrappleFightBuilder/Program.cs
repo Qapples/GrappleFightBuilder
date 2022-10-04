@@ -27,11 +27,11 @@ namespace GrappleFightBuilder
 
             if (!Directory.Exists(globalScriptDirectory))
             {
-                Console.WriteLine($"Cannot find global script directory ({globalScriptDirectory})!"); 
+                Console.WriteLine($"Cannot find global script directory ({globalScriptDirectory})!");
                 return;
             }
 
-            string[] globalScriptContents = GetScriptsInSubdirectories(globalScriptDirectory, true).scriptContents;
+            var (globalScriptContents, globalScriptLocations) = GetScriptsInSubdirectories(globalScriptDirectory, true);
             var (localScriptContents, localScriptLocations) = GetScriptsInSubdirectories(scenesDirectory, true);
 
             string globalNamespace = ScriptAssemblyBuilder.DefaultNamespace;
@@ -59,7 +59,7 @@ namespace GrappleFightBuilder
             }
 
             Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
-            Console.WriteLine($"{string.Join('\n', globalScriptContents.Concat(localScriptLocations))}");
+            Console.WriteLine($"{string.Join('\n', globalScriptLocations.Concat(localScriptLocations))}");
             
             ScriptAssemblyBuilder scriptBuilder = new(null, globalNamespace, null, scriptsAndNamespaces);
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);

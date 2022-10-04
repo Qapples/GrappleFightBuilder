@@ -78,7 +78,7 @@ namespace GrappleFightBuilder
         /// There can be multiple namespaces in the output assembly, and this dictionary represents the body of each
         /// of the namespaces. 
         /// </summary>
-        public Dictionary<string, StringBuilder> NamespaceBodies;
+        public Dictionary<string, List<string>> NamespaceScripts;
             
         /// <summary>
         /// Constructs an instance of <see cref="ScriptAssemblyBuilder"/>.
@@ -101,8 +101,10 @@ namespace GrappleFightBuilder
         {
             (Imports, References, GlobalNamespace) = (imports?.ToList() ?? DefaultImports.ToList(),
                 references?.ToList() ?? DefaultReferences.ToList(), globalNamespace ?? DefaultNamespace);
-            NamespaceBodies = new Dictionary<string, StringBuilder>
-                { { GlobalNamespace, new StringBuilder(ExampleClass) } };
+
+            string exampleScript = $"namespace {globalNamespace}\n{{\n{ExampleClass}\n}}";
+            NamespaceScripts = new Dictionary<string, List<string>>
+                { { GlobalNamespace, new List<string> {exampleScript} } };
 
             if (scripts is not null)
             {
@@ -134,7 +136,7 @@ namespace GrappleFightBuilder
         private const string ExampleClass = "public static class Example{}";
 
         /// <summary>
-        /// Adds code to a script body in <see cref="NamespaceBodies"/> and any new imports to <see cref="Imports"/>
+        /// Adds code to a script body in <see cref="NamespaceScripts"/> and any new imports to <see cref="Imports"/>
         /// from script data.
         /// </summary>
         /// <param name="scriptNamespace">The namespace the script resides in.</param>
@@ -146,43 +148,19 @@ namespace GrappleFightBuilder
             {
                 len += scriptContents.IndexOf(imports.First());
             }
-            
+
             //don't add already existing references
             Imports.AddRange(imports.Where(e => !Imports.Contains(e.Trim())));
 
-            //substring past the header.
-            string body = scriptContents[len..];
-            
-            if (!NamespaceBodies.ContainsKey(scriptNamespace))
+            scriptContents = scriptContents[..len] + $"\nnamespace {scriptNamespace} {{\n" + scriptContents[len..] +
+                             "\n}";
+
+            if (!NamespaceScripts.ContainsKey(scriptNamespace))
             {
-                NamespaceBodies[scriptNamespace] = new StringBuilder();
+                NamespaceScripts[scriptNamespace] = new List<string>();
             }
             
-            NamespaceBodies[scriptNamespace].Append(body);
-        }
-
-        /// <summary>
-        /// Compiles the script bodies in <see cref="NamespaceBodies"/> and <see cref="Imports"/> together into a
-        /// single string script. <br/>
-        /// Note: the outgoing string value may not be formatted properly. If <see cref="Imports"/> is null then
-        /// default imports are used.
-        /// </summary>
-        /// <returns>A new script that has the imports from <see cref="Imports"/> and the body from <see cref="Body"/>.
-        /// </returns>
-        public string GenerateFinalizedSource()
-        {
-            StringBuilder final = new();
-
-            final.Append(GetHeader((IEnumerable<string>?) Imports ?? DefaultImports));
-
-            foreach (var (nspace, contents) in NamespaceBodies)
-            {
-                final.Append($"namespace {nspace}{{\n");
-                final.Append(contents);
-                final.Append("}}\n");
-            }
-
-            return final.ToString();
+            NamespaceScripts[scriptNamespace].Add(scriptContents);
         }
 
         /// <summary>
@@ -197,11 +175,18 @@ namespace GrappleFightBuilder
         public ImmutableArray<Diagnostic> CompileIntoAssembly(string filePath,
             CSharpCompilationOptions? compilationOptions = null)
         {
-            string finalCode = GenerateFinalizedSource();
+            List<SyntaxTree> syntaxTrees = new();
+            foreach (List<string> scriptList in NamespaceScripts.Values)
+            {
+                foreach (string script in scriptList)
+                {
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(script));
+                }
+            }
 
             CSharpCompilation comp = CSharpCompilation.Create(
                 assemblyName: "GrappleFightScripts",
-                syntaxTrees: new[] {CSharpSyntaxTree.ParseText(finalCode)},
+                syntaxTrees: syntaxTrees,
                 references: References,
                 options: compilationOptions ?? new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
