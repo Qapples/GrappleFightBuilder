@@ -29,7 +29,7 @@ namespace GrappleFightBuilder
     /// </summary>
     public class ScriptAssemblyBuilder
     {
-        private const string DefaultNamespace = "ScriptData";
+        public const string DefaultNamespace = "ScriptData";
 
         /// <summary>
         /// The references that will be used when no references are specified in the constructor.
@@ -59,9 +59,9 @@ namespace GrappleFightBuilder
         };
         
         /// <summary>
-        /// The name of the namespace when creating the script.
+        /// The name of the global namespace that all scripts reside in.
         /// </summary>
-        public string Namespace { get; private set; }
+        public string GlobalNamespace { get; private set; }
 
         /// <summary>
         /// A list of each import that the script will use.
@@ -75,10 +75,11 @@ namespace GrappleFightBuilder
         public List<MetadataReference> References { get; private set; }
 
         /// <summary>
-        /// Represents the body of the script. Use <see cref="AddScript"/> to add additional code to the body. 
+        /// There can be multiple namespaces in the output assembly, and this dictionary represents the body of each
+        /// of the namespaces. 
         /// </summary>
-        public StringBuilder Body { get; private set; }
-
+        public Dictionary<string, StringBuilder> NamespaceBodies;
+            
         /// <summary>
         /// Constructs an instance of <see cref="ScriptAssemblyBuilder"/>.
         /// </summary>
@@ -88,27 +89,27 @@ namespace GrappleFightBuilder
         /// using System.Diagnostics;<br/>
         /// using DefaultEcs;<br/>
         /// using Microsoft.Xna.Framework;</param>
-        /// <param name="nspace">Defines the namespace that will encompass all the classes and methods the script will
+        /// <param name="globalNamespace">Defines the namespace that will encompass all the classes and methods the script will
         /// use. If null, then a default namespace (<see cref="DefaultNamespace"/>) will be used.</param>
         /// <param name="references"><see cref="MetadataReference"/> instances that define the references that are
         /// necessary to compile the script.</param>
-        /// <param name="scriptContents">The scripts (as strings, not file paths) to combine together so that an
+        /// <param name="scripts">The scripts (as strings, not file paths) to combine together so that an
         /// <see cref="Assembly"/> can be created later on.</param>
         // we have to use null here because we can't set it to any variable non-const value
-        public ScriptAssemblyBuilder(string[]? imports = null, string? nspace = null,
-            MetadataReference[]? references = null, params string[]? scriptContents)
+        public ScriptAssemblyBuilder(string[]? imports = null, string? globalNamespace = null,
+            MetadataReference[]? references = null, params (string nspace, string contents)[]? scripts)
         {
-            (Imports, References, Namespace) = (imports?.ToList() ?? DefaultImports.ToList(),
-                references?.ToList() ?? DefaultReferences.ToList(), nspace ?? DefaultNamespace);
-            Body = new StringBuilder();
+            (Imports, References, GlobalNamespace) = (imports?.ToList() ?? DefaultImports.ToList(),
+                references?.ToList() ?? DefaultReferences.ToList(), globalNamespace ?? DefaultNamespace);
+            NamespaceBodies = new Dictionary<string, StringBuilder>
+                { { GlobalNamespace, new StringBuilder(ExampleClass) } };
 
-            if (scriptContents is not null)
+            if (scripts is not null)
             {
-                foreach (string script in scriptContents) AddScript(script);
-            }
-            else
-            {
-                Body = new StringBuilder();
+                foreach (var (nspace, contents) in scripts)
+                {
+                    AddScript(string.IsNullOrEmpty(nspace) ? GlobalNamespace : nspace, contents);
+                }
             }
         }
 
@@ -121,22 +122,24 @@ namespace GrappleFightBuilder
         /// using System.Diagnostics;<br/>
         /// using DefaultEcs;<br/>
         /// using Microsoft.Xna.Framework;</param>
-        /// <param name="nspace">Defines the namespace that will encompass all the classes and methods the script will
+        /// <param name="globalNamespace">Defines the namespace that will encompass all the classes and methods the script will
         /// use. If null, then a default namespace (<see cref="DefaultNamespace"/>) will be used.</param>
         /// <param name="references"><see cref="MetadataReference"/> instances that define the references that are
         /// necessary to compile the script.</param>
-        public ScriptAssemblyBuilder(string[]? imports = null, string? nspace = null,
-            MetadataReference[]? references = null) : this(imports, nspace, references, null)
+        public ScriptAssemblyBuilder(string[]? imports = null, string? globalNamespace = null,
+            MetadataReference[]? references = null) : this(imports, globalNamespace, references, null)
         {
         }
 
-        private const string _exampleClass = "public static class Example{}";
+        private const string ExampleClass = "public static class Example{}";
 
         /// <summary>
-        /// Adds code to <see cref="Body"/> and any new imports to <see cref="Imports"/> from script data.
+        /// Adds code to a script body in <see cref="NamespaceBodies"/> and any new imports to <see cref="Imports"/>
+        /// from script data.
         /// </summary>
+        /// <param name="scriptNamespace">The namespace the script resides in.</param>
         /// <param name="scriptContents">The contents of the script to add. (Not the file name).</param>
-        public void AddScript(string scriptContents)
+        public void AddScript(string scriptNamespace, string scriptContents)
         {
             string[] imports = GetImports(scriptContents, out int len);
             if (imports.Length != 0)
@@ -149,11 +152,18 @@ namespace GrappleFightBuilder
 
             //substring past the header.
             string body = scriptContents[len..];
-            Body.Append(body);
+            
+            if (!NamespaceBodies.ContainsKey(scriptNamespace))
+            {
+                NamespaceBodies[scriptNamespace] = new StringBuilder();
+            }
+            
+            NamespaceBodies[scriptNamespace].Append(body);
         }
 
         /// <summary>
-        /// Compiles the <see cref="Body"/> and <see cref="Imports"/> together into a single string script. <br/>
+        /// Compiles the script bodies in <see cref="NamespaceBodies"/> and <see cref="Imports"/> together into a
+        /// single string script. <br/>
         /// Note: the outgoing string value may not be formatted properly. If <see cref="Imports"/> is null then
         /// default imports are used.
         /// </summary>
@@ -164,9 +174,13 @@ namespace GrappleFightBuilder
             StringBuilder final = new();
 
             final.Append(GetHeader((IEnumerable<string>?) Imports ?? DefaultImports));
-            final.Append(_exampleClass); //have this example class so that we can get the assembly via typeof().Assembly
-            final.Append(Body);
-            final.Append('}'); //this is for the open bracket from the namespace declaration.
+
+            foreach (var (nspace, contents) in NamespaceBodies)
+            {
+                final.Append($"namespace {nspace}{{\n");
+                final.Append(contents);
+                final.Append("}}\n");
+            }
 
             return final.ToString();
         }
@@ -226,8 +240,6 @@ namespace GrappleFightBuilder
             StringBuilder builder = new();
 
             foreach (string import in imports) builder.Append(import + '\n');
-            builder.Append('\n');
-            builder.Append($"namespace {Namespace}\n{{");
 
             return builder.ToString();
         }

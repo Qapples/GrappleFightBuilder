@@ -12,44 +12,56 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            var (scriptDirectory, scriptOutput) = (@"Scripts", "GrappleFightScripts.dll");
-            var (sceneDirectory, sceneOutput) = (@"Scenes", "GrappleFightScenes.dll");
-
-            bool searchSubDir = false;
-
+            var (globalScriptDirectory, scenesDirectory, scriptOutput) = (@"Scripts", @"Scenes", "GrappleFightScripts.dll");
+            
             //Console.WriteLine(args.Length);
             foreach (string arg in args)
             {
                 //Console.WriteLine(arg);
                 string argVal = arg[(arg.IndexOf('=') + 1)..];
 
-                if (arg.StartsWith("--script_directory=")) scriptDirectory = argVal;
-                if (arg.StartsWith("--scene_directory=")) sceneDirectory = argVal;
-
+                if (arg.StartsWith("--global_script_directory=")) globalScriptDirectory = argVal;
+                if (arg.StartsWith("--scenes_directory=")) scenesDirectory = argVal;
                 if (arg.StartsWith("--script_output=")) scriptOutput = argVal;
-                if (arg.StartsWith("--scene_output=")) sceneOutput = argVal;
-
-                if (arg.StartsWith("--search_subdirectories"))
-                {
-                    bool parse = bool.TryParse(argVal, out searchSubDir);
-                    searchSubDir = parse && searchSubDir;
-                }
             }
 
-            if (!Directory.Exists(scriptDirectory))
+            if (!Directory.Exists(globalScriptDirectory))
             {
-                Console.WriteLine($"Cannot find script directory ({scriptDirectory})!"); 
+                Console.WriteLine($"Cannot find global script directory ({globalScriptDirectory})!"); 
                 return;
             }
 
-            var (scriptContents, scriptLocations) = GetScriptsInSubdirectories(scriptDirectory, searchSubDir);
-            string[] scenePaths = Directory.GetFiles(sceneDirectory); //SceneBuilder accepts paths and not contents!
+            string[] globalScriptContents = GetScriptsInSubdirectories(globalScriptDirectory, true).scriptContents;
+            var (localScriptContents, localScriptLocations) = GetScriptsInSubdirectories(scenesDirectory, true);
 
-            //Build scripts
+            string globalNamespace = ScriptAssemblyBuilder.DefaultNamespace;
+
+            var scriptsAndNamespaces =
+                new (string nspace, string contents)[globalScriptContents.Length + localScriptLocations.Length];
+            int i;
+
+            //load global scripts first
+            for (i = 0; i < globalScriptContents.Length; i++)
+            {
+                scriptsAndNamespaces[i] = (globalNamespace, globalScriptContents[i]);
+            }
+
+            //then local scripts
+            for (; i < scriptsAndNamespaces.Length; i++)
+            {
+                int zeroIndex = i - globalScriptContents.Length;
+
+                string sceneName =
+                    FindSceneNameFromDirectory(Directory.GetParent(localScriptLocations[zeroIndex])!.FullName);
+
+                scriptsAndNamespaces[i].nspace = $"{globalNamespace}.{sceneName}";
+                scriptsAndNamespaces[i].contents = localScriptContents[zeroIndex];
+            }
+
             Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
-            Console.WriteLine($"{string.Join('\n', scriptLocations)}");
+            Console.WriteLine($"{string.Join('\n', globalScriptContents.Concat(localScriptLocations))}");
             
-            ScriptAssemblyBuilder scriptBuilder = new(null, null, null, scriptContents);
+            ScriptAssemblyBuilder scriptBuilder = new(null, globalNamespace, null, scriptsAndNamespaces);
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
             bool compileError = scriptResults.Any(e => e.Severity == DiagnosticSeverity.Error);
 
@@ -64,7 +76,7 @@ Output .dll to file path: {Path.GetFullPath(scriptOutput)}
             Console.WriteLine("FINISH");
         }
 
-        static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
+        private static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
             bool searchSubDir = false)
         {
             List<string> outputContents = new();
@@ -88,6 +100,23 @@ Output .dll to file path: {Path.GetFullPath(scriptOutput)}
             }
 
             return (outputContents.ToArray(), outputLocations.ToArray());
+        }
+
+        private static string FindSceneNameFromDirectory(string directory)
+        {
+            while (Directory.GetParent(directory) is not null)
+            {
+                string? sceneWorldFile = (from filePath in Directory.GetFiles(directory)
+                    where Path.GetExtension(filePath) == ".world"
+                    select Path.GetFileName(filePath)).FirstOrDefault();
+
+                string? sceneName = Path.GetFileNameWithoutExtension(sceneWorldFile);
+                if (sceneName is not null) return sceneName;
+                
+                directory = Path.Combine(directory, "..");
+            }
+
+            return directory;
         }
     }
 }

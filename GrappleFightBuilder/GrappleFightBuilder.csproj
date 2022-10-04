@@ -29,7 +29,7 @@
       <Reference Include="GrappleFight.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Input\bin\Debug\net6.0\GrappleFight.Input.dll</HintPath>
       </Reference>
-      <Reference Include="GrappleFight.Network, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="GrappleFight.Network">
         <HintPath>..\..\GrappleFight\GrappleFight.Network\bin\Debug\net6.0\GrappleFight.Network.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
