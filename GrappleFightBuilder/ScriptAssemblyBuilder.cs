@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using AppleScene.Helpers;
 using AppleScene.Rendering;
@@ -16,6 +17,7 @@ using GrappleFight.Components;
 using GrappleFight.Input;
 using GrappleFight.Network;
 using GrappleFight.Utils;
+using MessagePack;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -50,12 +52,15 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(IEnumerable<>)).Location,
             Assembly.GetAssembly(typeof(System.Linq.Enumerable)).Location,
             Assembly.GetAssembly(typeof(MonogameExtensions)).Location,
+            Assembly.GetAssembly(typeof(JsonSerializer)).Location,
+            Assembly.GetAssembly(typeof(MessagePackSerializer)).Location,
+            Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
         {
             "using System;", "using System.Diagnostics;", "using GrappleFight.Components;", 
-            "using DefaultEcs;", "using Microsoft.Xna.Framework;"
+            "using DefaultEcs;", "using Microsoft.Xna.Framework;", "using MessagePack;"
         };
         
         /// <summary>
@@ -213,7 +218,7 @@ namespace GrappleFightBuilder
         private static string[] GetImports(string value, out int len)
         {
             //normalize all line endings to be Environment.NewLine
-            string[] matches = Regex.Matches(value, "using.+")
+            string[] matches = Regex.Matches(value, "^using\\s.+.;", RegexOptions.Multiline)
                 .Select(e => Regex.Replace(e.Value, @"\r\n|\n\r|\n|\r", "")).ToArray();
             len = matches.Sum(e => e.Length + Environment.NewLine.Length);
 
