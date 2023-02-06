@@ -16,6 +16,7 @@ using GrappleFight.Collision;
 using GrappleFight.Components;
 using GrappleFight.Input;
 using GrappleFight.Network;
+using GrappleFight.Resource;
 using GrappleFight.Utils;
 using MessagePack;
 using Microsoft.CodeAnalysis;
@@ -54,7 +55,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(MonogameExtensions)).Location,
             Assembly.GetAssembly(typeof(JsonSerializer)).Location,
             Assembly.GetAssembly(typeof(MessagePackSerializer)).Location,
-            Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location
+            Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location,
+            Assembly.GetAssembly(typeof(ContentPath)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
@@ -179,7 +181,7 @@ namespace GrappleFightBuilder
         /// <returns>An <see cref="ImmutableArray{T}"/> with any warnings or errors from the compilation.</returns>
         public ImmutableArray<Diagnostic> CompileIntoAssembly(string filePath,
             CSharpCompilationOptions? compilationOptions = null)
-        {
+        { 
             List<SyntaxTree> syntaxTrees = new();
             foreach (List<string> scriptList in NamespaceScripts.Values)
             {

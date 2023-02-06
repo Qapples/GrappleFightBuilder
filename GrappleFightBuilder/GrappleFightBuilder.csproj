@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
@@ -16,6 +17,9 @@
       <Reference Include="AppleScene.Skinning, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Skinning.dll</HintPath>
       </Reference>
+      <Reference Include="GrappleFight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GrappleFight\GrappleFight\bin\Debug\net6.0\GrappleFight.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFight.Collision, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Collision\bin\Debug\net6.0\GrappleFight.Collision.dll</HintPath>
       </Reference>
@@ -27,6 +31,9 @@
       </Reference>
       <Reference Include="GrappleFight.Network, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Network\bin\Debug\net6.0\GrappleFight.Network.dll</HintPath>
+      </Reference>
+      <Reference Include="GrappleFight.Resource">
+        <HintPath>..\..\GrappleFight\GrappleFight.Resource\bin\Debug\net6.0\GrappleFight.Resource.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Utils\bin\Debug\net6.0\GrappleFight.Utils.dll</HintPath>
