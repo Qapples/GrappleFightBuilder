@@ -17,6 +17,7 @@ using GrappleFight.Components;
 using GrappleFight.Input;
 using GrappleFight.Network;
 using GrappleFight.Resource;
+using GrappleFight.Systems;
 using GrappleFight.Utils;
 using MessagePack;
 using Microsoft.CodeAnalysis;
@@ -56,7 +57,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(JsonSerializer)).Location,
             Assembly.GetAssembly(typeof(MessagePackSerializer)).Location,
             Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location,
-            Assembly.GetAssembly(typeof(ContentPath)).Location
+            Assembly.GetAssembly(typeof(ContentPath)).Location,
+            Assembly.GetAssembly(typeof(VelocitySystem)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =

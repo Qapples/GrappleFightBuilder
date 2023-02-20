@@ -35,6 +35,9 @@
       <Reference Include="GrappleFight.Resource">
         <HintPath>..\..\GrappleFight\GrappleFight.Resource\bin\Debug\net6.0\GrappleFight.Resource.dll</HintPath>
       </Reference>
+      <Reference Include="GrappleFight.Systems">
+        <HintPath>..\..\GrappleFight\GrappleFight.Systems\bin\Debug\net6.0\GrappleFight.Systems.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFight.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Utils\bin\Debug\net6.0\GrappleFight.Utils.dll</HintPath>
       </Reference>
