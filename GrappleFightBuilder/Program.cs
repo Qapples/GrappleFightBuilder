@@ -12,8 +12,9 @@ namespace GrappleFightBuilder
     {
         static void Main(string[] args)
         {
-            var (globalScriptDirectory, scenesDirectory, scriptOutput) = (@"Scripts", @"Scenes", "GrappleFightScripts.dll");
-            
+            var (globalScriptDirectory, userInterfaceScriptDirectory, scenesDirectory, scriptOutput) =
+                (@"Scripts", @"UI/Scripts", @"Scenes", "GrappleFightScripts.dll");
+
             //Console.WriteLine(args.Length);
             foreach (string arg in args)
             {
@@ -21,6 +22,7 @@ namespace GrappleFightBuilder
                 string argVal = arg[(arg.IndexOf('=') + 1)..];
 
                 if (arg.StartsWith("--global_script_directory=")) globalScriptDirectory = argVal;
+                if (arg.StartsWith("--ui_script_directory")) userInterfaceScriptDirectory = argVal;
                 if (arg.StartsWith("--scenes_directory=")) scenesDirectory = argVal;
                 if (arg.StartsWith("--script_output=")) scriptOutput = argVal;
             }
@@ -33,33 +35,47 @@ namespace GrappleFightBuilder
 
             var (globalScriptContents, globalScriptLocations) = GetScriptsInSubdirectories(globalScriptDirectory, true);
             var (localScriptContents, localScriptLocations) = GetScriptsInSubdirectories(scenesDirectory, true);
+            var (userInterfaceScriptContents, userInterfaceScriptLocations) =
+                GetScriptsInSubdirectories(userInterfaceScriptDirectory, true);
 
             string globalNamespace = ScriptAssemblyBuilder.DefaultNamespace;
+            string userInterfaceNamespace = "UserInterfaceScripts";
 
-            var scriptsAndNamespaces =
-                new (string nspace, string contents)[globalScriptContents.Length + localScriptLocations.Length];
+            var scriptsAndNamespaces = new (string nspace, string contents)[globalScriptContents.Length +
+                                                                            localScriptLocations.Length +
+                                                                            userInterfaceScriptLocations.Length];
             int i;
+            int prevI;
 
             //load global scripts first
             for (i = 0; i < globalScriptContents.Length; i++)
             {
                 scriptsAndNamespaces[i] = (globalNamespace, globalScriptContents[i]);
             }
+            
 
             //then local scripts
-            for (; i < scriptsAndNamespaces.Length; i++)
+            prevI = i;
+            for (; i < i + localScriptContents.Length; i++)
             {
-                int zeroIndex = i - globalScriptContents.Length;
-
                 string sceneName =
-                    FindSceneNameFromDirectory(Directory.GetParent(localScriptLocations[zeroIndex])!.FullName);
+                    FindSceneNameFromDirectory(Directory.GetParent(localScriptLocations[i - prevI])!.FullName);
 
                 scriptsAndNamespaces[i].nspace = $"{globalNamespace}.{sceneName}";
-                scriptsAndNamespaces[i].contents = localScriptContents[zeroIndex];
+                scriptsAndNamespaces[i].contents = localScriptContents[i - prevI];
             }
+            
+            //then ui scripts
+            prevI = i;
+            for (; i < scriptsAndNamespaces.Length; i++)
+            {
+                scriptsAndNamespaces[i] = (userInterfaceNamespace, userInterfaceScriptContents[i - prevI]);
+            }
+            
 
             Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
-            Console.WriteLine($"{string.Join('\n', globalScriptLocations.Concat(localScriptLocations))}");
+            Console.WriteLine($"{string.Join('\n', globalScriptLocations.Concat(localScriptLocations))}\n" +
+                              $"{string.Join('\n', globalScriptLocations.Concat(userInterfaceScriptLocations))}");
             
             ScriptAssemblyBuilder scriptBuilder = new(null, globalNamespace, null, scriptsAndNamespaces);
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);
@@ -75,7 +91,7 @@ Output .dll to file path: {Path.GetFullPath(scriptOutput)}
 
             Console.WriteLine("FINISH");
         }
-
+        
         private static (string[] scriptContents, string[] scriptLocations) GetScriptsInSubdirectories(string directory,
             bool searchSubDir = false)
         {
