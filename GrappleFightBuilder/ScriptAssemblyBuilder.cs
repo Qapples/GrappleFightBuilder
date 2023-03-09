@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using AppleScene.Helpers;
 using AppleScene.Rendering;
+using AppleUI.Interfaces.Behavior;
 using DefaultEcs;
 using GrappleFight.Collision;
 using GrappleFight.Components;
@@ -58,7 +59,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(MessagePackSerializer)).Location,
             Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location,
             Assembly.GetAssembly(typeof(ContentPath)).Location,
-            Assembly.GetAssembly(typeof(VelocitySystem)).Location
+            Assembly.GetAssembly(typeof(VelocitySystem)).Location,
+            Assembly.GetAssembly(typeof(IButtonBehavior)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
