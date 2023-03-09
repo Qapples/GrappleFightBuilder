@@ -115,7 +115,7 @@ namespace GrappleFightBuilder
 
             string exampleScript = $"namespace {globalNamespace}\n{{\n{ExampleClass}\n}}";
             NamespaceScripts = new Dictionary<string, List<string>>
-                { { GlobalNamespace, new List<string> {exampleScript} } };
+                { { GlobalNamespace, new List<string> { exampleScript } } };
 
             if (scripts is not null)
             {
@@ -168,9 +168,10 @@ namespace GrappleFightBuilder
 
             if (!NamespaceScripts.ContainsKey(scriptNamespace))
             {
-                NamespaceScripts[scriptNamespace] = new List<string>();
+                NamespaceScripts[scriptNamespace] = new List<string>
+                    { $"namespace {scriptNamespace}\n{{\n{ExampleClass}\n}}" };
             }
-            
+
             NamespaceScripts[scriptNamespace].Add(scriptContents);
         }
 
