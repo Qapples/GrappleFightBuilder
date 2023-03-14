@@ -52,11 +52,10 @@ namespace GrappleFightBuilder
             {
                 scriptsAndNamespaces[i] = (globalNamespace, globalScriptContents[i]);
             }
-            
 
             //then local scripts
             prevI = i;
-            for (; i < i + localScriptContents.Length; i++)
+            for (; i < prevI + localScriptContents.Length; i++)
             {
                 string sceneName =
                     FindSceneNameFromDirectory(Directory.GetParent(localScriptLocations[i - prevI])!.FullName);
