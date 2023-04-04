@@ -74,7 +74,7 @@ namespace GrappleFightBuilder
 
             Console.WriteLine("\n============= SCRIPTS TO BUILD =============");
             Console.WriteLine($"{string.Join('\n', globalScriptLocations.Concat(localScriptLocations))}\n" +
-                              $"{string.Join('\n', globalScriptLocations.Concat(userInterfaceScriptLocations))}");
+                              $"{string.Join('\n', userInterfaceScriptLocations)}");
             
             ScriptAssemblyBuilder scriptBuilder = new(null, globalNamespace, null, scriptsAndNamespaces);
             var scriptResults = scriptBuilder.CompileIntoAssembly(scriptOutput);

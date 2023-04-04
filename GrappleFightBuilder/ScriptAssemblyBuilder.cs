@@ -60,7 +60,7 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(IgnoreMemberAttribute)).Location,
             Assembly.GetAssembly(typeof(ContentPath)).Location,
             Assembly.GetAssembly(typeof(VelocitySystem)).Location,
-            Assembly.GetAssembly(typeof(IButtonBehavior)).Location
+            Assembly.GetAssembly(typeof(IButtonBehavior)).Location,
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
