@@ -15,8 +15,10 @@ using AppleUI.Interfaces.Behavior;
 using DefaultEcs;
 using GrappleFight.Collision;
 using GrappleFight.Components;
+using GrappleFight.Game;
 using GrappleFight.Input;
 using GrappleFight.Network;
+using GrappleFight.Network.InGame;
 using GrappleFight.Resource;
 using GrappleFight.Systems;
 using GrappleFight.Utils;
@@ -61,6 +63,7 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(ContentPath)).Location,
             Assembly.GetAssembly(typeof(VelocitySystem)).Location,
             Assembly.GetAssembly(typeof(IButtonBehavior)).Location,
+            Assembly.GetAssembly(typeof(IGameCommands)).Location,
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =

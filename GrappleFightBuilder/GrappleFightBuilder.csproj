@@ -29,6 +29,9 @@
       <Reference Include="GrappleFight.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Components\bin\Debug\net6.0\GrappleFight.Components.dll</HintPath>
       </Reference>
+      <Reference Include="GrappleFight.Game">
+        <HintPath>..\..\GrappleFight\GrappleFight.Game\bin\Debug\net6.0\GrappleFight.Game.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFight.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight.Input\bin\Debug\net6.0\GrappleFight.Input.dll</HintPath>
       </Reference>
@@ -49,7 +52,7 @@
     <ItemGroup>
       <PackageReference Include="DefaultEcs" Version="0.17.2" />
       <PackageReference Include="LiteNetLib" Version="1.0.0-rc.2" />
-      <PackageReference Include="MessagePack" Version="2.4.35" />
+      <PackageReference Include="MessagePack" Version="2.5.108" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.0-1.final" />
       <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
       <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0023" />
