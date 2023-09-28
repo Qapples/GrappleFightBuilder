@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
@@ -64,6 +65,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(VelocitySystem)).Location,
             Assembly.GetAssembly(typeof(IButtonBehavior)).Location,
             Assembly.GetAssembly(typeof(IGameCommands)).Location,
+            Assembly.GetAssembly(typeof(IPEndPoint)).Location,
+            Assembly.GetAssembly(typeof(System.Net.Http.HttpClient)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
