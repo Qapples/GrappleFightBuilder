@@ -66,7 +66,9 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(IButtonBehavior)).Location,
             Assembly.GetAssembly(typeof(IGameCommands)).Location,
             Assembly.GetAssembly(typeof(IPEndPoint)).Location,
-            Assembly.GetAssembly(typeof(System.Net.Http.HttpClient)).Location
+            Assembly.GetAssembly(typeof(System.Net.Http.HttpClient)).Location,
+            Assembly.GetAssembly(typeof(GameClient)).Location,
+            Assembly.GetAssembly(typeof(ImmutableArray)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
@@ -102,7 +104,7 @@ namespace GrappleFightBuilder
         /// </summary>
         /// <param name="imports">Defines the imports the script will use. If null, a default set of imports will be
         /// used. Default imports:<br/>
-        /// using System;<br/>
+        /// using System;<br/>`
         /// using System.Diagnostics;<br/>
         /// using DefaultEcs;<br/>
         /// using Microsoft.Xna.Framework;</param>
