@@ -68,7 +68,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(IPEndPoint)).Location,
             Assembly.GetAssembly(typeof(System.Net.Http.HttpClient)).Location,
             Assembly.GetAssembly(typeof(GameClient)).Location,
-            Assembly.GetAssembly(typeof(ImmutableArray)).Location
+            Assembly.GetAssembly(typeof(ImmutableArray)).Location,
+            Assembly.GetAssembly(typeof(Regex)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =

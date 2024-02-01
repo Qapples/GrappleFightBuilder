@@ -86,7 +86,9 @@ Output .dll to file path: {Path.GetFullPath(scriptOutput)}
 =========================================================");
             Console.WriteLine(
                 $"================ DIAGNOSTIC RESULTS ({(compileError ? "ERROR" : "OK")}) ================");
-            Console.WriteLine($"{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}\n");
+            Console.WriteLine($"{string.Join("\n", scriptResults.Select(e => e.ToString()).ToArray())}");
+            Console.WriteLine(
+                $"================ DIAGNOSTIC RESULTS ({(compileError ? "ERROR" : "OK")}) ================\n");
 
             Console.WriteLine("FINISH");
         }
