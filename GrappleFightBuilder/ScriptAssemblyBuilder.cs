@@ -14,6 +14,7 @@ using AppleScene.Helpers;
 using AppleScene.Rendering;
 using AppleUI.Interfaces.Behavior;
 using DefaultEcs;
+using FontStashSharp;
 using GrappleFight.Collision;
 using GrappleFight.Components;
 using GrappleFight.Game;
@@ -69,7 +70,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(System.Net.Http.HttpClient)).Location,
             Assembly.GetAssembly(typeof(GameClient)).Location,
             Assembly.GetAssembly(typeof(ImmutableArray)).Location,
-            Assembly.GetAssembly(typeof(Regex)).Location
+            Assembly.GetAssembly(typeof(Regex)).Location,
+            Assembly.GetAssembly(typeof(SpriteFontBase)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
@@ -195,7 +197,7 @@ namespace GrappleFightBuilder
         /// <returns>An <see cref="ImmutableArray{T}"/> with any warnings or errors from the compilation.</returns>
         public ImmutableArray<Diagnostic> CompileIntoAssembly(string filePath,
             CSharpCompilationOptions? compilationOptions = null)
-        { 
+        {
             List<SyntaxTree> syntaxTrees = new();
             foreach (List<string> scriptList in NamespaceScripts.Values)
             {
