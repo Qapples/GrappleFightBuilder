@@ -20,6 +20,9 @@
       <Reference Include="AppleUI">
         <HintPath>..\..\GrappleFight\AppleUI\AppleUI\bin\Debug\net6.0\AppleUI.dll</HintPath>
       </Reference>
+      <Reference Include="AppleSerialization">
+        <HintPath>..\..\GrappleFight\AppleSerialization\AppleSerialization\bin\Debug\net6.0\AppleSerialization.dll</HintPath>
+      </Reference>
       <Reference Include="GrappleFight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GrappleFight\GrappleFight\bin\Debug\net6.0\GrappleFight.dll</HintPath>
       </Reference>

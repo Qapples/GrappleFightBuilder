@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using AppleScene.Helpers;
 using AppleScene.Rendering;
+using AppleSerialization.Info;
 using AppleUI.Interfaces.Behavior;
 using DefaultEcs;
 using FontStashSharp;
@@ -71,7 +73,9 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(GameClient)).Location,
             Assembly.GetAssembly(typeof(ImmutableArray)).Location,
             Assembly.GetAssembly(typeof(Regex)).Location,
-            Assembly.GetAssembly(typeof(SpriteFontBase)).Location
+            Assembly.GetAssembly(typeof(SpriteFontBase)).Location,
+            Assembly.GetAssembly(typeof(EntityInfo)).Location,
+            Assembly.GetAssembly(typeof(ReadOnlySequence<>)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
