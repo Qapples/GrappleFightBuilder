@@ -52,7 +52,7 @@ namespace GrappleFightBuilder
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location),
                 "System.Runtime.dll"),
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(object)).Location,
-            Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(Input)).Location,
+            Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(InputHandler)).Location,
             Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location,
             Assembly.GetAssembly(typeof(Animation)).Location, Assembly.GetAssembly(typeof(MeshData)).Location,
             Assembly.GetAssembly(typeof(Matrix4x4)).Location, Assembly.GetAssembly(typeof(NumericsExtensions)).Location,
