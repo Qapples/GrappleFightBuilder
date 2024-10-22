@@ -75,7 +75,8 @@ namespace GrappleFightBuilder
             Assembly.GetAssembly(typeof(Regex)).Location,
             Assembly.GetAssembly(typeof(SpriteFontBase)).Location,
             Assembly.GetAssembly(typeof(EntityInfo)).Location,
-            Assembly.GetAssembly(typeof(ReadOnlySequence<>)).Location
+            Assembly.GetAssembly(typeof(ReadOnlySequence<>)).Location,
+            Assembly.GetAssembly(typeof(Uri)).Location
         }.Select(e => MetadataReference.CreateFromFile(e)).ToArray();
 
         private static readonly string[] DefaultImports =
