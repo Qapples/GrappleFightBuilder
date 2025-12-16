@@ -82,7 +82,7 @@ namespace GrappleFightBuilder
 
             //Diagnostic results
             Console.WriteLine($@"=========================================================
-Output .dll to file path: {Path.GetFullPath(scriptOutput)}
+Output .dll to file path: {Path.GetFullPath(scriptOutput)} (with .pdb)
 =========================================================");
             Console.WriteLine(
                 $"================ DIAGNOSTIC RESULTS ({(compileError ? "ERROR" : "OK")}) ================");

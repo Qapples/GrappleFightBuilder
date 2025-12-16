@@ -51,6 +51,7 @@ namespace GrappleFightBuilder
             AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "netstandard").Location,
             Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location),
                 "System.Runtime.dll"),
+            Assembly.GetAssembly(typeof(System.Diagnostics.Trace)).Location,
             Assembly.GetAssembly(typeof(System.Console)).Location, Assembly.GetAssembly(typeof(object)).Location,
             Assembly.GetAssembly(typeof(IScript)).Location, Assembly.GetAssembly(typeof(InputHandler)).Location,
             Assembly.GetAssembly(typeof(ICollisionHull)).Location, Assembly.GetAssembly(typeof(GameClient)).Location,
@@ -219,9 +220,10 @@ namespace GrappleFightBuilder
                 references: References,
                 options: compilationOptions ?? new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            using MemoryStream ms = new();
+            using MemoryStream peStream = new();
+            using MemoryStream pdbStream = new();
             
-            EmitResult result = comp.Emit(ms);
+            EmitResult result = comp.Emit(peStream, pdbStream);
 
             if (!result.Success)
             {
@@ -229,11 +231,19 @@ namespace GrappleFightBuilder
                 return result.Diagnostics;
             }
 
-            ms.Seek(0, SeekOrigin.Begin);
+            peStream.Seek(0, SeekOrigin.Begin);
 
             using (FileStream fs = new(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
-                ms.WriteTo(fs);
+                peStream.WriteTo(fs);
+            }
+
+            pdbStream.Seek(0, SeekOrigin.Begin);
+
+            string pdbPath = Path.ChangeExtension(filePath, ".pdb");
+            using (FileStream fs = new(pdbPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                pdbStream.WriteTo(fs);
             }
 
             return result.Diagnostics;
