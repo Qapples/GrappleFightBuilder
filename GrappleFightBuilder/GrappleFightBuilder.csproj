@@ -2,53 +2,53 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="AppleScene.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Helpers.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net8.0\AppleScene.Helpers.dll</HintPath>
       </Reference>
       <Reference Include="AppleScene.Rendering, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Rendering.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net8.0\AppleScene.Rendering.dll</HintPath>
       </Reference>
       <Reference Include="AppleScene.Skinning, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net6.0\AppleScene.Skinning.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleScene\AppleScene.Rendering\bin\Debug\net8.0\AppleScene.Skinning.dll</HintPath>
       </Reference>
       <Reference Include="AppleUI">
-        <HintPath>..\..\GrappleFight\AppleUI\AppleUI\bin\Debug\net6.0\AppleUI.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleUI\AppleUI\bin\Debug\net8.0\AppleUI.dll</HintPath>
       </Reference>
       <Reference Include="AppleSerialization">
-        <HintPath>..\..\GrappleFight\AppleSerialization\AppleSerialization\bin\Debug\net6.0\AppleSerialization.dll</HintPath>
+        <HintPath>..\..\GrappleFight\AppleSerialization\AppleSerialization\bin\Debug\net8.0\AppleSerialization.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight\bin\Debug\net6.0\GrappleFight.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight\bin\Debug\net8.0\GrappleFight.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Collision, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight.Collision\bin\Debug\net6.0\GrappleFight.Collision.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Collision\bin\Debug\net8.0\GrappleFight.Collision.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Components, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight.Components\bin\Debug\net6.0\GrappleFight.Components.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Components\bin\Debug\net8.0\GrappleFight.Components.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Game">
-        <HintPath>..\..\GrappleFight\GrappleFight.Game\bin\Debug\net6.0\GrappleFight.Game.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Game\bin\Debug\net8.0\GrappleFight.Game.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Input, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight.Input\bin\Debug\net6.0\GrappleFight.Input.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Input\bin\Debug\net8.0\GrappleFight.Input.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Network, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight.Network\bin\Debug\net6.0\GrappleFight.Network.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Network\bin\Debug\net8.0\GrappleFight.Network.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Resource">
-        <HintPath>..\..\GrappleFight\GrappleFight.Resource\bin\Debug\net6.0\GrappleFight.Resource.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Resource\bin\Debug\net8.0\GrappleFight.Resource.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Systems">
-        <HintPath>..\..\GrappleFight\GrappleFight.Systems\bin\Debug\net6.0\GrappleFight.Systems.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Systems\bin\Debug\net8.0\GrappleFight.Systems.dll</HintPath>
       </Reference>
       <Reference Include="GrappleFight.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GrappleFight\GrappleFight.Utils\bin\Debug\net6.0\GrappleFight.Utils.dll</HintPath>
+        <HintPath>..\..\GrappleFight\GrappleFight.Utils\bin\Debug\net8.0\GrappleFight.Utils.dll</HintPath>
       </Reference>
     </ItemGroup>
 
